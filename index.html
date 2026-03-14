@@ -1,722 +1,1216 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Green Network - Protect Earth</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        :root {
-            --primary: #2e7d32;
-            --secondary: #4caf50;
-            --accent: #8bc34a;
-            --light: #e8f5e9;
-            --dark: #1b5e20;
-            --text: #333333;
-            --white: #ffffff;
-        }
-
-        body {
-            background-color: var(--light);
-            color: var(--text);
-            line-height: 1.6;
-        }
-
-        header {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            color: var(--white);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.8rem;
-            font-weight: 700;
-        }
-
-        .logo i {
-            font-size: 2rem;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-
-        nav ul li {
-            margin-left: 2rem;
-        }
-
-        nav ul li a {
-            color: var(--white);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            padding: 0.5rem 0;
-            position: relative;
-        }
-
-        nav ul li a:hover {
-            color: var(--accent);
-        }
-
-        nav ul li a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background-color: var(--accent);
-            transition: width 0.3s ease;
-        }
-
-        nav ul li a:hover::after {
-            width: 100%;
-        }
-
-        .hero {
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2073&q=80');
-            background-size: cover;
-            background-position: center;
-            height: 80vh;
-            display: flex;
-            align-items: center;
-            text-align: center;
-            color: var(--white);
-        }
-
-        .hero-content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .hero p {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-        }
-
-        .btn {
-            display: inline-block;
-            background-color: var(--accent);
-            color: var(--white);
-            padding: 0.8rem 2rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn:hover {
-            background-color: var(--primary);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        section {
-            padding: 5rem 0;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .section-title h2 {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-            position: relative;
-            display: inline-block;
-        }
-
-        .section-title h2::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background-color: var(--accent);
-            border-radius: 2px;
-        }
-
-        .section-title p {
-            color: var(--text);
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: center;
-        }
-
-        .about-img {
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .about-img img {
-            width: 100%;
-            height: auto;
-            display: block;
-            transition: transform 0.5s ease;
-        }
-
-        .about-img:hover img {
-            transform: scale(1.05);
-        }
-
-        .about-text h3 {
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-            color: var(--dark);
-        }
-
-        .about-text p {
-            margin-bottom: 1.5rem;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 2rem 1rem;
-            background-color: var(--white);
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease;
-        }
-
-        .stat-item:hover {
-            transform: translateY(-10px);
-        }
-
-        .stat-item i {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-        .stat-item h3 {
-            font-size: 2.5rem;
-            color: var(--dark);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-item p {
-            color: var(--text);
-        }
-
-        .initiatives {
-            background-color: var(--white);
-        }
-
-        .initiatives-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-        }
-
-        .initiative-card {
-            background-color: var(--light);
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease;
-        }
-
-        .initiative-card:hover {
-            transform: translateY(-10px);
-        }
-
-        .initiative-img {
-            height: 200px;
-            overflow: hidden;
-        }
-
-        .initiative-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .initiative-card:hover .initiative-img img {
-            transform: scale(1.1);
-        }
-
-        .initiative-content {
-            padding: 1.5rem;
-        }
-
-        .initiative-content h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--dark);
-        }
-
-        .initiative-content p {
-            margin-bottom: 1.5rem;
-        }
-
-        .cta {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            color: var(--white);
-            text-align: center;
-            padding: 5rem 0;
-        }
-
-        .cta h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .cta p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .cta .btn {
-            background-color: var(--white);
-            color: var(--primary);
-        }
-
-        .cta .btn:hover {
-            background-color: var(--accent);
-            color: var(--white);
-        }
-
-        footer {
-            background-color: var(--dark);
-            color: var(--white);
-            padding: 3rem 0 1rem;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer-column h3 {
-            font-size: 1.3rem;
-            margin-bottom: 1.5rem;
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        .footer-column h3::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 40px;
-            height: 2px;
-            background-color: var(--accent);
-        }
-
-        .footer-column p {
-            margin-bottom: 1rem;
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 0.8rem;
-        }
-
-        .footer-links li a {
-            color: var(--light);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .footer-links li a:hover {
-            color: var(--accent);
-            padding-left: 5px;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .social-links a {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            color: var(--white);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .social-links a:hover {
-            background-color: var(--accent);
-            transform: translateY(-5px);
-        }
-
-        .copyright {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .mobile-menu {
-            display: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        @media (max-width: 992px) {
-            .about-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .initiatives-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .footer-content {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .hero p {
-                font-size: 1.1rem;
-            }
-            
-            nav ul {
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                width: 100%;
-                background-color: var(--primary);
-                flex-direction: column;
-                padding: 1rem 0;
-                text-align: center;
-                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-            }
-            
-            nav ul.active {
-                display: flex;
-            }
-            
-            nav ul li {
-                margin: 0;
-                padding: 0.8rem 0;
-            }
-            
-            .mobile-menu {
-                display: block;
-            }
-            
-            .initiatives-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .footer-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .stats {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Animation for stats counter */
-        .counter {
-            transition: all 0.5s ease;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TERRA — Environmental Journal</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --forest:   #0d1f0f;
+      --deep:     #111a12;
+      --moss:     #1e3320;
+      --fern:     #2d4a30;
+      --sage:     #4a7c52;
+      --leaf:     #72b07c;
+      --mint:     #a8d5b0;
+      --pale:     #d6eedb;
+      --cream:    #f2f7ee;
+      --white:    #fafcf8;
+      --amber:    #d4a843;
+      --rust:     #c0522a;
+      --sky:      #7ab8c4;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--forest);
+      color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ── Custom cursor ── */
+    body { cursor: none; }
+    .cursor {
+      position: fixed;
+      width: 10px; height: 10px;
+      background: var(--leaf);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s, background 0.2s;
+      mix-blend-mode: screen;
+    }
+    .cursor-ring {
+      position: fixed;
+      width: 36px; height: 36px;
+      border: 1px solid rgba(114,176,124,0.4);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.18s ease, width 0.2s, height 0.2s, border-color 0.2s;
+    }
+
+    /* ── Grain overlay ── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 500;
+      opacity: 0.6;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%;
+      height: 64px;
+      background: linear-gradient(to bottom, rgba(13,31,15,0.95) 0%, transparent 100%);
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: 0.25em;
+      color: var(--leaf);
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      text-decoration: none;
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(214,238,219,0.55);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--mint); }
+
+    .nav-cta {
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--forest);
+      background: var(--leaf);
+      padding: 8px 20px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--mint); }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+    }
+
+    .hero-left {
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 120px 6% 80px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--leaf);
+      margin-bottom: 24px;
+      animation: fadeUp 1s ease both;
+    }
+
+    .hero-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(3.5rem, 7vw, 6rem);
+      line-height: 0.95;
+      color: var(--white);
+      margin-bottom: 32px;
+      animation: fadeUp 1s 0.15s ease both;
+    }
+
+    .hero-title .line-italic {
+      display: block;
+      font-style: italic;
+      color: var(--leaf);
+    }
+
+    .hero-desc {
+      max-width: 440px;
+      font-size: 1rem;
+      line-height: 1.8;
+      color: rgba(214,238,219,0.65);
+      margin-bottom: 40px;
+      font-weight: 300;
+      animation: fadeUp 1s 0.3s ease both;
+    }
+
+    .hero-actions {
+      display: flex; gap: 16px; align-items: center;
+      animation: fadeUp 1s 0.45s ease both;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      padding: 14px 32px;
+      background: var(--leaf);
+      color: var(--forest);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.25s, transform 0.2s;
+    }
+    .btn-primary:hover { background: var(--mint); transform: translateY(-2px); }
+
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.82rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--pale);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(214,238,219,0.25);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .btn-ghost:hover { color: var(--leaf); border-color: var(--leaf); }
+
+    /* Hero right — animated illustration */
+    .hero-right {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-visual {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 60% 40%, rgba(45,74,48,0.7) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 80% at 80% 80%, rgba(30,51,32,0.9) 0%, transparent 50%),
+        linear-gradient(160deg, #152417 0%, #0d1f0f 100%);
+    }
+
+    /* SVG forest silhouette */
+    .hero-trees {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 70%;
+    }
+
+    .hero-circle {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 380px; height: 380px;
+      border-radius: 50%;
+      border: 1px solid rgba(114,176,124,0.12);
+      animation: pulse 6s ease-in-out infinite;
+    }
+    .hero-circle:nth-child(2) {
+      width: 280px; height: 280px;
+      border-color: rgba(114,176,124,0.18);
+      animation-delay: -2s;
+    }
+    .hero-circle:nth-child(3) {
+      width: 160px; height: 160px;
+      border-color: rgba(114,176,124,0.3);
+      animation-delay: -4s;
+    }
+
+    .hero-orb {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px; height: 80px;
+      background: radial-gradient(circle, rgba(114,176,124,0.6), transparent 70%);
+      border-radius: 50%;
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .hero-stat {
+      position: absolute;
+      bottom: 80px; left: 40px;
+      background: rgba(13,31,15,0.75);
+      border: 1px solid rgba(114,176,124,0.2);
+      backdrop-filter: blur(12px);
+      padding: 20px 28px;
+      animation: fadeUp 1.2s 0.6s ease both;
+    }
+    .hero-stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--leaf);
+      line-height: 1;
+    }
+    .hero-stat-label {
+      font-size: 0.75rem;
+      color: rgba(214,238,219,0.5);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* scroll indicator */
+    .scroll-hint {
+      position: absolute;
+      bottom: 32px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(114,176,124,0.45);
+      z-index: 10;
+      animation: fadeUp 1.5s 1s ease both;
+    }
+    .scroll-line {
+      width: 1px; height: 48px;
+      background: linear-gradient(to bottom, rgba(114,176,124,0.5), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    /* ── Stats bar ── */
+    .stats-bar {
+      background: var(--moss);
+      border-top: 1px solid rgba(114,176,124,0.1);
+      border-bottom: 1px solid rgba(114,176,124,0.1);
+      padding: 40px 5%;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 0 24px;
+      border-right: 1px solid rgba(114,176,124,0.12);
+      animation: fadeUp 0.8s ease both;
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-item:nth-child(1) { animation-delay: 0.1s; }
+    .stat-item:nth-child(2) { animation-delay: 0.2s; }
+    .stat-item:nth-child(3) { animation-delay: 0.3s; }
+    .stat-item:nth-child(4) { animation-delay: 0.4s; }
+
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: var(--leaf);
+      line-height: 1;
+    }
+    .stat-unit { font-size: 1.2rem; color: var(--sage); }
+    .stat-label {
+      font-size: 0.78rem;
+      color: rgba(168,213,176,0.55);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
+    /* ── Section titles ── */
+    .section-header {
+      margin-bottom: 56px;
+    }
+    .section-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--leaf);
+      margin-bottom: 16px;
+      position: relative;
+      padding-left: 28px;
+    }
+    .section-tag::before {
+      content: '';
+      position: absolute; left: 0; top: 50%;
+      transform: translateY(-50%);
+      width: 18px; height: 1px;
+      background: var(--leaf);
+    }
+    .section-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.1;
+      color: var(--white);
+    }
+    .section-title em { font-style: italic; color: var(--leaf); }
+
+    /* ── Featured article ── */
+    .section-featured {
+      padding: 100px 5%;
+      background: var(--deep);
+    }
+
+    .featured-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .featured-visual {
+      position: relative;
+      aspect-ratio: 4/3;
+      overflow: hidden;
+    }
+
+    .featured-visual-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, #1b3d1e 0%, #2d5c32 40%, #3d7a42 70%, #1a3d1e 100%);
+    }
+
+    /* Animated leaf pattern */
+    .featured-visual-bg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at 20% 50%, rgba(114,176,124,0.15) 0%, transparent 40%),
+        radial-gradient(circle at 80% 20%, rgba(168,213,176,0.1) 0%, transparent 35%),
+        radial-gradient(circle at 60% 80%, rgba(74,124,82,0.2) 0%, transparent 40%);
+    }
+
+    .featured-visual-label {
+      position: absolute;
+      top: 24px; left: 24px;
+      background: var(--amber);
+      color: var(--forest);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+    }
+
+    .featured-visual-overlay {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 40%;
+      background: linear-gradient(to top, rgba(13,31,15,0.9), transparent);
+    }
+
+    /* SVG lines decoration */
+    .deco-lines {
+      position: absolute;
+      inset: 0;
+      opacity: 0.15;
+    }
+
+    .featured-content { padding: 8px 0; }
+
+    .featured-meta {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 0.75rem;
+      color: rgba(168,213,176,0.5);
+      margin-bottom: 24px;
+    }
+    .meta-dot { color: var(--sage); }
+
+    .featured-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.7rem, 3vw, 2.4rem);
+      line-height: 1.2;
+      color: var(--white);
+      margin-bottom: 20px;
+    }
+    .featured-title em { font-style: italic; color: var(--leaf); }
+
+    .featured-body {
+      font-size: 0.95rem;
+      line-height: 1.85;
+      color: rgba(214,238,219,0.6);
+      font-weight: 300;
+      margin-bottom: 32px;
+    }
+
+    .featured-link {
+      display: inline-flex; align-items: center; gap: 10px;
+      color: var(--leaf);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: gap 0.2s;
+    }
+    .featured-link:hover { gap: 16px; }
+    .featured-link-arrow { transition: transform 0.2s; }
+    .featured-link:hover .featured-link-arrow { transform: translateX(4px); }
+
+    /* ── Articles grid ── */
+    .section-articles {
+      padding: 100px 5%;
+      background: var(--forest);
+    }
+
+    .articles-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    .article-card {
+      background: var(--moss);
+      border: 1px solid rgba(114,176,124,0.1);
+      overflow: hidden;
+      transition: transform 0.3s ease, border-color 0.3s;
+      animation: fadeUp 0.8s ease both;
+    }
+    .article-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(114,176,124,0.3);
+    }
+    .article-card:nth-child(1) { animation-delay: 0.1s; }
+    .article-card:nth-child(2) { animation-delay: 0.2s; }
+    .article-card:nth-child(3) { animation-delay: 0.3s; }
+
+    .card-thumb {
+      height: 200px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .thumb-bg {
+      position: absolute; inset: 0;
+      transition: transform 0.5s ease;
+    }
+    .article-card:hover .thumb-bg { transform: scale(1.05); }
+
+    .thumb-1 { background: linear-gradient(135deg, #1a3d24, #2e6b38, #4a9456); }
+    .thumb-2 { background: linear-gradient(135deg, #1a2c3d, #2d5478, #4a80a8); }
+    .thumb-3 { background: linear-gradient(135deg, #3d2a1a, #6b4828, #a87050); }
+
+    .thumb-icon {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3.5rem;
+      opacity: 0.3;
+    }
+
+    .thumb-cat {
+      position: absolute;
+      bottom: 14px; left: 14px;
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      background: rgba(13,31,15,0.8);
+      color: var(--leaf);
+      padding: 4px 10px;
+      backdrop-filter: blur(4px);
+    }
+
+    .card-body { padding: 24px; }
+
+    .card-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.15rem;
+      line-height: 1.3;
+      color: var(--white);
+      text-decoration: none;
+      display: block;
+      margin-bottom: 12px;
+      transition: color 0.2s;
+    }
+    .card-title:hover { color: var(--leaf); }
+
+    .card-excerpt {
+      font-size: 0.85rem;
+      line-height: 1.75;
+      color: rgba(214,238,219,0.5);
+      font-weight: 300;
+      margin-bottom: 20px;
+    }
+
+    .card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 16px;
+      border-top: 1px solid rgba(114,176,124,0.1);
+      font-size: 0.75rem;
+    }
+
+    .card-author { color: rgba(168,213,176,0.6); }
+    .card-time {
+      display: flex; align-items: center; gap: 5px;
+      color: rgba(114,176,124,0.5);
+    }
+    .time-dot {
+      width: 5px; height: 5px;
+      background: var(--sage);
+      border-radius: 50%;
+    }
+
+    /* ── Topics ── */
+    .section-topics {
+      padding: 100px 5%;
+      background: var(--deep);
+    }
+
+    .topics-inner { max-width: 1200px; margin: 0 auto; }
+
+    .topics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .topic-card {
+      background: var(--moss);
+      border: 1px solid rgba(114,176,124,0.1);
+      padding: 32px 28px;
+      cursor: pointer;
+      transition: background 0.25s, border-color 0.25s, transform 0.25s;
+      text-decoration: none;
+      display: block;
+      animation: fadeUp 0.8s ease both;
+    }
+    .topic-card:hover {
+      background: var(--fern);
+      border-color: rgba(114,176,124,0.35);
+      transform: translateY(-4px);
+    }
+
+    .topic-card:nth-child(1) { animation-delay: 0.1s; }
+    .topic-card:nth-child(2) { animation-delay: 0.2s; }
+    .topic-card:nth-child(3) { animation-delay: 0.3s; }
+    .topic-card:nth-child(4) { animation-delay: 0.4s; }
+    .topic-card:nth-child(5) { animation-delay: 0.5s; }
+    .topic-card:nth-child(6) { animation-delay: 0.6s; }
+    .topic-card:nth-child(7) { animation-delay: 0.7s; }
+    .topic-card:nth-child(8) { animation-delay: 0.8s; }
+
+    .topic-icon { font-size: 2rem; margin-bottom: 16px; }
+
+    .topic-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.05rem;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+
+    .topic-count {
+      font-size: 0.75rem;
+      color: var(--sage);
+      letter-spacing: 0.08em;
+    }
+
+    /* ── Quote banner ── */
+    .quote-banner {
+      padding: 100px 5%;
+      background: var(--fern);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quote-banner::before {
+      content: '"';
+      position: absolute;
+      top: -60px; left: 50%;
+      transform: translateX(-50%);
+      font-family: 'DM Serif Display', serif;
+      font-size: 28rem;
+      color: rgba(13,31,15,0.18);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .quote-text {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.6rem, 4vw, 2.8rem);
+      font-style: italic;
+      color: var(--white);
+      max-width: 900px;
+      margin: 0 auto 24px;
+      line-height: 1.35;
+      position: relative;
+    }
+
+    .quote-text em { color: var(--mint); font-style: normal; }
+
+    .quote-source {
+      font-size: 0.8rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(168,213,176,0.5);
+      position: relative;
+    }
+
+    /* ── Newsletter ── */
+    .section-newsletter {
+      padding: 100px 5%;
+      background: var(--forest);
+    }
+
+    .newsletter-inner {
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .newsletter-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      color: var(--white);
+      margin-bottom: 16px;
+    }
+
+    .newsletter-sub {
+      font-size: 0.95rem;
+      color: rgba(214,238,219,0.5);
+      font-weight: 300;
+      margin-bottom: 40px;
+      line-height: 1.7;
+    }
+
+    .newsletter-form {
+      display: flex; gap: 0;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .newsletter-input {
+      flex: 1;
+      padding: 14px 20px;
+      background: var(--moss);
+      border: 1px solid rgba(114,176,124,0.2);
+      border-right: none;
+      color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .newsletter-input::placeholder { color: rgba(168,213,176,0.3); }
+    .newsletter-input:focus { border-color: var(--leaf); }
+
+    .newsletter-btn {
+      padding: 14px 28px;
+      background: var(--leaf);
+      border: none;
+      color: var(--forest);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .newsletter-btn:hover { background: var(--mint); }
+
+    .newsletter-trust {
+      margin-top: 16px;
+      font-size: 0.75rem;
+      color: rgba(114,176,124,0.4);
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--deep);
+      border-top: 1px solid rgba(114,176,124,0.08);
+      padding: 64px 5% 40px;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 56px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid rgba(114,176,124,0.08);
+      margin-bottom: 32px;
+    }
+
+    .footer-brand-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: 0.25em;
+      color: var(--leaf);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .footer-brand-desc {
+      font-size: 0.85rem;
+      line-height: 1.8;
+      color: rgba(168,213,176,0.4);
+      font-weight: 300;
+      max-width: 280px;
+    }
+
+    .footer-col-title {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--sage);
+      margin-bottom: 20px;
+    }
+
+    .footer-links { list-style: none; }
+    .footer-links li { margin-bottom: 10px; }
+    .footer-links a {
+      text-decoration: none;
+      font-size: 0.85rem;
+      color: rgba(168,213,176,0.4);
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--leaf); }
+
+    .footer-bottom {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 0.78rem;
+      color: rgba(114,176,124,0.25);
+    }
+
+    .footer-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.75rem;
+      color: var(--sage);
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+      50%       { transform: translate(-50%, -50%) scale(1.08); opacity: 1; }
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.4; }
+      50%       { opacity: 1; }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-12px); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-right { height: 350px; }
+      .articles-grid { grid-template-columns: 1fr 1fr; }
+      .topics-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-inner { grid-template-columns: 1fr 1fr; gap: 40px; }
+    }
+
+    @media (max-width: 700px) {
+      .stats-bar { grid-template-columns: 1fr 1fr; }
+      .featured-grid { grid-template-columns: 1fr; gap: 40px; }
+      .articles-grid { grid-template-columns: 1fr; }
+      .topics-grid { grid-template-columns: 1fr 1fr; }
+      .nav-cta, .nav-links { display: none; }
+      .newsletter-form { flex-direction: column; }
+      .newsletter-input { border-right: 1px solid rgba(114,176,124,0.2); border-bottom: none; }
+      .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+    }
+  </style>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <div class="container nav-container">
-            <div class="logo">
-                <i class="fas fa-seedling"></i>
-                <span>Green Network</span>
-            </div>
-            <nav>
-                <div class="mobile-menu">
-                    <i class="fas fa-bars"></i>
-                </div>
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#initiatives">Initiatives</a></li>
-                    <li><a href="#get-involved">Get Involved</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </nav>
+
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- Nav -->
+  <nav>
+    <a class="nav-logo" href="#">Terra</a>
+    <ul class="nav-links">
+      <li><a href="#">Stories</a></li>
+      <li><a href="#">Science</a></li>
+      <li><a href="#">Action</a></li>
+      <li><a href="#">Community</a></li>
+    </ul>
+    <a class="nav-cta" href="#">Subscribe</a>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-left">
+      <p class="hero-eyebrow">⬡ Environmental Journal — Est. 2019</p>
+      <h1 class="hero-title">
+        The Earth<br>
+        <span class="line-italic">is Speaking.</span><br>
+        Are We<br>Listening?
+      </h1>
+      <p class="hero-desc">
+        In-depth reporting, science, and stories about our planet's most urgent environmental challenges — and the people working to solve them.
+      </p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="#">Read Latest Issue</a>
+        <a class="btn-ghost" href="#">Our Mission <span>→</span></a>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="hero-visual">
+        <div class="hero-circle"></div>
+        <div class="hero-circle"></div>
+        <div class="hero-circle"></div>
+        <div class="hero-orb"></div>
+
+        <!-- SVG tree silhouettes -->
+        <svg class="hero-trees" viewBox="0 0 600 400" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
+          <g fill="rgba(13,31,15,0.9)">
+            <!-- Trees of various sizes -->
+            <polygon points="80,400 120,240 160,400" />
+            <polygon points="90,400 120,200 150,400" />
+            <polygon points="100,400 120,160 140,400" />
+            <polygon points="200,400 250,220 300,400" />
+            <polygon points="215,400 250,175 285,400" />
+            <polygon points="225,400 250,140 275,400" />
+            <polygon points="370,400 420,250 470,400" />
+            <polygon points="385,400 420,210 455,400" />
+            <polygon points="395,400 420,175 445,400" />
+            <polygon points="500,400 540,260 580,400" />
+            <polygon points="510,400 540,220 570,400" />
+            <polygon points="20,400 55,270 90,400" />
+            <polygon points="460,400 490,240 520,400" />
+          </g>
+          <rect x="0" y="370" width="600" height="30" fill="rgba(13,31,15,0.95)" />
+          <!-- Subtle grid lines -->
+          <g stroke="rgba(114,176,124,0.06)" stroke-width="1">
+            <line x1="0" y1="100" x2="600" y2="100"/>
+            <line x1="0" y1="200" x2="600" y2="200"/>
+            <line x1="0" y1="300" x2="600" y2="300"/>
+            <line x1="150" y1="0" x2="150" y2="400"/>
+            <line x1="300" y1="0" x2="300" y2="400"/>
+            <line x1="450" y1="0" x2="450" y2="400"/>
+          </g>
+        </svg>
+
+        <div class="hero-stat">
+          <div class="hero-stat-num">1.2°C</div>
+          <div class="hero-stat-label">Above pre-industrial avg</div>
         </div>
-    </header>
+      </div>
+    </div>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="container hero-content">
-            <h1>Protect Our Planet, Preserve Our Future</h1>
-            <p>Join the global movement to create a sustainable world through conservation, education, and community action.</p>
-            <a href="#get-involved" class="btn">Join Our Network</a>
+    <div class="scroll-hint">
+      <div class="scroll-line"></div>
+      <span>scroll</span>
+    </div>
+  </section>
+
+  <!-- Stats bar -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-num">3.8<span class="stat-unit">M</span></div>
+      <div class="stat-label">Hectares lost this year</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">420<span class="stat-unit">ppm</span></div>
+      <div class="stat-label">CO₂ concentration</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">+19<span class="stat-unit">cm</span></div>
+      <div class="stat-label">Sea level rise since 1900</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">69<span class="stat-unit">%</span></div>
+      <div class="stat-label">Wildlife pop. decline</div>
+    </div>
+  </div>
+
+  <!-- Featured Article -->
+  <section class="section-featured">
+    <div class="featured-grid">
+
+      <div class="featured-visual">
+        <div class="featured-visual-bg"></div>
+        <div class="featured-visual-label">Cover Story</div>
+        <svg class="deco-lines" viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+          <g stroke="rgba(114,176,124,1)" stroke-width="1" fill="none">
+            <path d="M250 200 Q180 120 100 150 Q40 170 20 250 Q0 330 80 360 Q160 390 230 350 Q300 310 330 240 Q360 170 300 120 Q240 70 200 110"/>
+            <path d="M250 200 Q320 280 400 250 Q460 230 480 160 Q500 90 440 50 Q380 10 310 40 Q240 70 220 140 Q200 210 250 200"/>
+          </g>
+        </svg>
+        <div class="featured-visual-overlay"></div>
+      </div>
+
+      <div class="featured-content">
+        <div class="featured-meta">
+          <span>Climate Crisis</span>
+          <span class="meta-dot">·</span>
+          <span>December 20, 2025</span>
+          <span class="meta-dot">·</span>
+          <span>12 min read</span>
         </div>
-    </section>
+        <h2 class="featured-title">
+          The Last Old-Growth Forests Are <em>Disappearing Faster Than We Thought</em>
+        </h2>
+        <p class="featured-body">
+          New satellite data reveals that ancient forest ecosystems — some over 500 years old — are being cleared at a rate three times higher than previously reported. These forests are not just carbon sinks; they are irreplaceable libraries of life. Once gone, their complexity cannot be recreated in our lifetimes.
+        </p>
+        <a class="featured-link" href="#">
+          Read Full Story <span class="featured-link-arrow">→</span>
+        </a>
+      </div>
 
-    <!-- About Section -->
-    <section id="about">
-        <div class="container">
-            <div class="section-title">
-                <h2>About Green Network</h2>
-                <p>We are a global community dedicated to environmental protection and sustainable development.</p>
-            </div>
-            <div class="about-content">
-                <div class="about-img">
-                    <img src="https://images.unsplash.com/photo-1507591064344-4c6ce005b128?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Team planting trees">
-                </div>
-                <div class="about-text">
-                    <h3>Our Mission</h3>
-                    <p>Green Network is committed to creating a sustainable future by protecting natural ecosystems, promoting renewable energy, and empowering communities to take environmental action.</p>
-                    <p>Founded in 2010, we've grown from a small grassroots organization to an international network with over 50,000 members across 120 countries.</p>
-                    <p>Our approach combines scientific research, community engagement, and policy advocacy to address the most pressing environmental challenges of our time.</p>
-                    <a href="#" class="btn">Learn More</a>
-                </div>
-            </div>
-            <div class="stats">
-                <div class="stat-item">
-                    <i class="fas fa-tree"></i>
-                    <h3 class="counter" data-target="2500000">0</h3>
-                    <p>Trees Planted</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-users"></i>
-                    <h3 class="counter" data-target="50000">0</h3>
-                    <p>Active Members</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-globe-americas"></i>
-                    <h3 class="counter" data-target="120">0</h3>
-                    <p>Countries Reached</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-recycle"></i>
-                    <h3 class="counter" data-target="1500">0</h3>
-                    <p>Cleanup Projects</p>
-                </div>
-            </div>
-        </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Initiatives Section -->
-    <section class="initiatives" id="initiatives">
-        <div class="container">
-            <div class="section-title">
-                <h2>Our Initiatives</h2>
-                <p>Discover the key programs and projects we're implementing to protect our planet.</p>
-            </div>
-            <div class="initiatives-grid">
-                <div class="initiative-card">
-                    <div class="initiative-img">
-                        <img src="https://dialogue.earth/content/uploads/2021/04/lessons-from-the-rush-to-reforest-china-dialogue-2400x1599.jpg" alt="Reforestation">
-                    </div>
-                    <div class="initiative-content">
-                        <h3>Global Reforestation</h3>
-                        <p>Planting millions of trees worldwide to restore ecosystems, combat climate change, and protect biodiversity.</p>
-                        <a href="#" class="btn">Learn More</a>
-                    </div>
-                </div>
-                <div class="initiative-card">
-                    <div class="initiative-img">
-                        <img src="https://images.unsplash.com/photo-1621451537084-482c73073a0f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80" alt="Ocean Conservation">
-                    </div>
-                    <div class="initiative-content">
-                        <h3>Ocean Conservation</h3>
-                        <p>Protecting marine ecosystems, reducing plastic pollution, and promoting sustainable fishing practices.</p>
-                        <a href="#" class="btn">Learn More</a>
-                    </div>
-                </div>
-                <div class="initiative-card">
-                    <div class="initiative-img">
-                        <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2072&q=80" alt="Renewable Energy">
-                    </div>
-                    <div class="initiative-content">
-                        <h3>Renewable Energy</h3>
-                        <p>Promoting solar, wind, and other clean energy sources to reduce dependence on fossil fuels.</p>
-                        <a href="#" class="btn">Learn More</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+  <!-- Articles Grid -->
+  <section class="section-articles">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div class="section-header">
+        <div class="section-tag">Latest Stories</div>
+        <h2 class="section-title">What's <em>Happening</em> Now</h2>
+      </div>
 
-    <!-- CTA Section -->
-    <section class="cta" id="get-involved">
-        <div class="container">
-            <h2>Join Our Global Movement</h2>
-            <p>Together, we can create a sustainable future for generations to come. Every action counts, no matter how small.</p>
-            <a href="#" class="btn">Become a Member</a>
-        </div>
-    </section>
+      <div class="articles-grid">
 
-    <!-- Footer -->
-    <footer id="contact">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>Green Network</h3>
-                    <p>We are dedicated to protecting our planet through collaborative action, education, and sustainable solutions.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-                <div class="footer-column">
-                    <h3>Quick Links</h3>
-                    <ul class="footer-links">
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#about">About Us</a></li>
-                        <li><a href="#initiatives">Initiatives</a></li>
-                        <li><a href="#get-involved">Get Involved</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Our Programs</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">Reforestation</a></li>
-                        <li><a href="#">Ocean Cleanup</a></li>
-                        <li><a href="#">Wildlife Protection</a></li>
-                        <li><a href="#">Climate Education</a></li>
-                        <li><a href="#">Sustainable Agriculture</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Contact Us</h3>
-                    <p><i class="fas fa-map-marker-alt"></i> Copper Creek Drive, New York</p>
-                    <p><i class="fas fa-phone"></i> +1 (312) 171-0771</p>
-                    <p><i class="fas fa-envelope"></i> support@greennetwork.org</p>
-                </div>
+        <article class="article-card">
+          <div class="card-thumb">
+            <div class="thumb-bg thumb-1"></div>
+            <div class="thumb-icon">🌊</div>
+            <div class="thumb-cat">Oceans</div>
+          </div>
+          <div class="card-body">
+            <a class="card-title" href="#">Coral Reefs Are Bleaching at Record Rates — But Some Are Fighting Back</a>
+            <p class="card-excerpt">Scientists discover heat-resistant coral strains that could hold the key to reef survival in warming oceans.</p>
+            <div class="card-footer">
+              <span class="card-author">Maya Chen</span>
+              <span class="card-time"><span class="time-dot"></span>8 min</span>
             </div>
-            <div class="copyright">
-                <p>&copy; 2025 Green Network. All rights reserved.</p>
+          </div>
+        </article>
+
+        <article class="article-card">
+          <div class="card-thumb">
+            <div class="thumb-bg thumb-2"></div>
+            <div class="thumb-icon">🌬️</div>
+            <div class="thumb-cat">Energy</div>
+          </div>
+          <div class="card-body">
+            <a class="card-title" href="#">Wind Power Now Cheaper Than Coal in 80% of the World</a>
+            <p class="card-excerpt">The renewable energy revolution is accelerating. Here's what the transition looks like on the ground.</p>
+            <div class="card-footer">
+              <span class="card-author">James O'Brien</span>
+              <span class="card-time"><span class="time-dot"></span>6 min</span>
             </div>
-        </div>
-    </footer>
+          </div>
+        </article>
 
-    <script>
-        // Mobile Menu Toggle
-        document.querySelector('.mobile-menu').addEventListener('click', function() {
-            document.querySelector('nav ul').classList.toggle('active');
-        });
+        <article class="article-card">
+          <div class="card-thumb">
+            <div class="thumb-bg thumb-3"></div>
+            <div class="thumb-icon">🦋</div>
+            <div class="thumb-cat">Biodiversity</div>
+          </div>
+          <div class="card-body">
+            <a class="card-title" href="#">A Million Species Under Threat: Inside the Extinction Crisis</a>
+            <p class="card-excerpt">The rate of species loss is now 100 to 1,000 times the natural background rate. What's driving it, and what can stop it?</p>
+            <div class="card-footer">
+              <span class="card-author">Lena Vasquez</span>
+              <span class="card-time"><span class="time-dot"></span>11 min</span>
+            </div>
+          </div>
+        </article>
 
-        // Counter Animation
-        function animateCounters() {
-            const counters = document.querySelectorAll('.counter');
-            const speed = 200; // The lower the slower
-            
-            counters.forEach(counter => {
-                const target = +counter.getAttribute('data-target');
-                const count = +counter.innerText;
-                
-                const inc = target / speed;
-                
-                if(count < target) {
-                    counter.innerText = Math.ceil(count + inc);
-                    setTimeout(animateCounters, 1);
-                } else {
-                    counter.innerText = target;
-                }
-            });
+      </div>
+    </div>
+  </section>
+
+  <!-- Topics -->
+  <section class="section-topics">
+    <div class="topics-inner">
+      <div class="section-header">
+        <div class="section-tag">Explore</div>
+        <h2 class="section-title">Browse by <em>Topic</em></h2>
+      </div>
+
+      <div class="topics-grid">
+        <a class="topic-card" href="#">
+          <div class="topic-icon">🌡️</div>
+          <div class="topic-name">Climate Change</div>
+          <div class="topic-count">84 articles</div>
+        </a>
+        <a class="topic-card" href="#">
+          <div class="topic-icon">🌲</div>
+          <div class="topic-name">Deforestation</div>
+          <div class="topic-count">62 articles</div>
+        </a>
+        <a class="topic-card" href="#">
+          <div class="topic-icon">🌊</div>
+          <div class="topic-name">Ocean Health</div>
+          <div class="topic-count">47 articles</div>
+        </a>
+        <a class="topic-card" href="#">
+          <div class="topic-icon">⚡</div>
+          <div class="topic-name">Clean Energy</div>
+          <div class="topic-count">91 articles</div>
+        </a>
+        <a class="topic-card" href="#">
+          <div class="topic-icon">🦁</div>
+          <div class="topic-name">Wildlife</div>
+          <div class="topic-count">55 articles</div>
+        </a>
+        <a class="topic-card" href="#">
+          <div class="topic-icon">🌱</div>
+          <div class="topic-name">Regeneration</div>
+          <div class="topic-count">38 articles</div>
+        </a>
+        <a class="topic-card" href="#">
+          <div class="topic-icon">🏙️</div>
+          <div class="topic-name">Urban Ecology</div>
+          <div class="topic-count">29 articles</div>
+        </a>
+        <a class="topic-card" href="#">
+          <div class="topic-icon">🤝</div>
+          <div class="topic-name">Climate Justice</div>
+          <div class="topic-count">43 articles</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quote -->
+  <div class="quote-banner">
+    <p class="quote-text">
+      "We do not inherit the earth from our ancestors — <em>we borrow it from our children.</em>"
+    </p>
+    <p class="quote-source">— Antoine de Saint-Exupéry</p>
+  </div>
+
+  <!-- Newsletter -->
+  <section class="section-newsletter">
+    <div class="newsletter-inner">
+      <div class="section-tag" style="display:inline-block;margin-bottom:20px;">Stay Informed</div>
+      <h2 class="newsletter-title">The Weekly Earth Brief</h2>
+      <p class="newsletter-sub">Join 140,000+ readers getting our weekly digest of the most important environmental news, science breakthroughs, and actionable solutions.</p>
+      <div class="newsletter-form">
+        <input class="newsletter-input" type="email" placeholder="Enter your email address" />
+        <button class="newsletter-btn">Subscribe</button>
+      </div>
+      <p class="newsletter-trust">No spam. Unsubscribe anytime. We never share your data.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand-logo">Terra</div>
+        <p class="footer-brand-desc">Independent environmental journalism since 2019. We report on the planet's most pressing crises — and the people building solutions.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Topics</div>
+        <ul class="footer-links">
+          <li><a href="#">Climate Change</a></li>
+          <li><a href="#">Oceans</a></li>
+          <li><a href="#">Forests</a></li>
+          <li><a href="#">Wildlife</a></li>
+          <li><a href="#">Clean Energy</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Journal</div>
+        <ul class="footer-links">
+          <li><a href="#">Latest Stories</a></li>
+          <li><a href="#">Features</a></li>
+          <li><a href="#">Photo Essays</a></li>
+          <li><a href="#">Podcast</a></li>
+          <li><a href="#">Newsletter</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">About</div>
+        <ul class="footer-links">
+          <li><a href="#">Our Mission</a></li>
+          <li><a href="#">Editorial Team</a></li>
+          <li><a href="#">Contribute</a></li>
+          <li><a href="#">Advertise</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Terra Environmental Journal. All rights reserved.</span>
+      <span class="footer-badge">🌿 Carbon neutral publication</span>
+    </div>
+  </footer>
+
+  <script>
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    const cursorRing = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx + 'px';
+      cursor.style.top = my + 'px';
+    });
+
+    // Smooth ring follow
+    (function animateRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      cursorRing.style.left = rx + 'px';
+      cursorRing.style.top = ry + 'px';
+      requestAnimationFrame(animateRing);
+    })();
+
+    // Hover effect on links & buttons
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.transform = 'translate(-50%,-50%) scale(2.5)';
+        cursorRing.style.width = '56px';
+        cursorRing.style.height = '56px';
+        cursorRing.style.borderColor = 'rgba(114,176,124,0.65)';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.transform = 'translate(-50%,-50%) scale(1)';
+        cursorRing.style.width = '36px';
+        cursorRing.style.height = '36px';
+        cursorRing.style.borderColor = 'rgba(114,176,124,0.4)';
+      });
+    });
+
+    // Animate stat numbers on scroll
+    const statNums = document.querySelectorAll('.stat-num');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.style.animation = 'fadeUp 0.6s ease both';
         }
-
-        // Initialize counters when page loads
-        window.addEventListener('load', animateCounters);
-
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                if(targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if(targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                    
-                    document.querySelector('nav ul').classList.remove('active');
-                }
-            });
-        });
-    </script>
+      });
+    }, { threshold: 0.5 });
+    statNums.forEach(el => observer.observe(el));
+  </script>
 </body>
-
 </html>
