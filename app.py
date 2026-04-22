@@ -29,27 +29,26 @@ CurrentPort = 443
 Tls = 'tls'
 ISP = ''
 
-# dns server
-DNS_SERVERS = ['8.8.4.4', '1.1.1.1']
+DNS_SERVERS = ['8.8.4.4', '1.1.1.1']  # 备用 DoH 解析服务器
+_DOH_URLS = {
+    '8.8.4.4': 'https://dns.google/resolve',
+    '1.1.1.1': 'https://cloudflare-dns.com/dns-query',
+}
+# 测速域名黑名单：防止节点被滥用为公开测速入口，消耗服务器带宽
 BLOCKED_DOMAINS = [
     'speedtest.net', 'fast.com', 'speedtest.cn', 'speed.cloudflare.com', 'speedof.me',
-    'testmy.net', 'bandwidth.place', 'speed.io', 'librespeed.org', 'speedcheck.org'
+    'testmy.net', 'bandwidth.place', 'speed.io', 'librespeed.org', 'speedcheck.org',
 ]
 
-# 日志级别
-log_level = logging.DEBUG if DEBUG else logging.INFO
+# ── 日志系统配置 ──────────────────────────────────────────────────────────────
 logging.basicConfig(
-    level=log_level,
-    format='%(asctime)s - %(levelname)s - %(message)s'
+    level=logging.DEBUG if DEBUG else logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
 )
-
-# 禁用访问,连接等日志
-logging.getLogger('aiohttp.access').setLevel(logging.WARNING)
-logging.getLogger('aiohttp.server').setLevel(logging.WARNING)
-logging.getLogger('aiohttp.client').setLevel(logging.WARNING)
-logging.getLogger('aiohttp.internal').setLevel(logging.WARNING)
-logging.getLogger('aiohttp.websocket').setLevel(logging.WARNING)
-
+# 抑制 aiohttp 底层高频访问日志，避免干扰核心业务日志
+for _noisy in ('aiohttp.access', 'aiohttp.server', 'aiohttp.client',
+               'aiohttp.internal', 'aiohttp.websocket'):
+    logging.getLogger(_noisy).setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 def is_port_available(port, host='0.0.0.0'):
