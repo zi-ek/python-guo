@@ -11,6 +11,9 @@ import asyncio
 import aiohttp
 import logging
 import ipaddress
+import math
+import time
+from collections import OrderedDict
 from aiohttp import web
 
 # 环境变量
@@ -121,28 +124,194 @@ async def get_ip():
         Tls = 'tls'
         CurrentPort = 443
 
-async def resolve_host(host: str) -> str:
-    try:
-        ipaddress.ip_address(host)
-        return host
-    except:
-        pass
-    
-    for dns_server in DNS_SERVERS:
+class DNSResolver:
+    """Bounded TTL/LRU cache and one reusable DoH connection pool per app."""
+
+    def __init__(self, cache_ttl=60.0, cache_size=1024, timeout=2.0,
+                 max_pending=256, clock=time.monotonic):
+        self.cache_ttl = cache_ttl
+        self.cache_size = cache_size
+        self.timeout = timeout
+        self.max_pending = max_pending
+        self._clock = clock
+        self._cache = OrderedDict()
+        self._pending = {}
+        self._session = None
+        self._closed = False
+
+    async def resolve(self, host):
         try:
-            async with aiohttp.ClientSession() as session:
-                url = f'https://dns.google/resolve?name={host}&type=A'
-                async with session.get(url, timeout=5) as resp:
-                    if resp.status == 200:
-                        data = await resp.json()
-                        if data.get('Status') == 0 and data.get('Answer'):
-                            for answer in data['Answer']:
-                                if answer.get('type') == 1:
-                                    return answer.get('data')
-        except:
-            continue
-    
-    return host  # 如果解析失败，返回原始域名
+            ipaddress.ip_address(host)
+            return host
+        except ValueError:
+            pass
+
+        if self._closed:
+            raise RuntimeError('DNS resolver is closed')
+        key = host.encode('idna').decode('ascii').lower()
+        cached = self._cache.get(key)
+        if cached:
+            expires, address = cached
+            if expires > self._clock():
+                self._cache.move_to_end(key)
+                return address
+            del self._cache[key]
+
+        task = self._pending.get(key)
+        if task is None:
+            if len(self._pending) >= self.max_pending:
+                raise OSError('Too many pending DNS lookups')
+            task = asyncio.create_task(self._lookup(key, host), name='proxy-dns')
+            self._pending[key] = task
+
+            def finished(done):
+                if self._pending.get(key) is done:
+                    self._pending.pop(key, None)
+                # A disconnected caller must not leave an unobserved exception.
+                if not done.cancelled():
+                    done.exception()
+
+            task.add_done_callback(finished)
+        # One cancelled client must not cancel another client's shared lookup.
+        return await asyncio.shield(task)
+
+    async def _lookup(self, key, original_host):
+        if self._session is None:
+            self._session = aiohttp.ClientSession(
+                timeout=aiohttp.ClientTimeout(total=self.timeout),
+                connector=aiohttp.TCPConnector(limit=32, ttl_dns_cache=60),
+            )
+        for dns_server in DNS_SERVERS:
+            url = _DOH_URLS.get(dns_server)
+            if not url:
+                continue
+            try:
+                async with self._session.get(
+                    url, params={'name': key, 'type': 'A'},
+                    headers={'Accept': 'application/dns-json'},
+                ) as response:
+                    if response.status != 200:
+                        continue
+                    # Cloudflare returns application/dns-json, not application/json.
+                    data = await response.json(content_type=None)
+                    if not isinstance(data, dict) or data.get('Status') != 0:
+                        continue
+                    answers = data.get('Answer', [])
+                    if not isinstance(answers, list):
+                        continue
+                    for answer in answers:
+                        if not isinstance(answer, dict) or answer.get('type') != 1:
+                            continue
+                        try:
+                            address = str(ipaddress.IPv4Address(answer.get('data')))
+                        except (ValueError, TypeError, ipaddress.AddressValueError):
+                            continue
+                        # Respect CNAME TTLs as well as the selected A record.
+                        ttls = [item.get('TTL', 0) for item in answers
+                                if isinstance(item, dict) and item.get('type') in (1, 5)]
+                        try:
+                            ttl = min(float(value) for value in ttls)
+                            if not math.isfinite(ttl):
+                                ttl = 0
+                            ttl = max(0.0, min(self.cache_ttl, ttl))
+                        except (TypeError, ValueError):
+                            ttl = 0
+                        if ttl > 0 and self.cache_size > 0:
+                            self._cache[key] = (self._clock() + ttl, address)
+                            self._cache.move_to_end(key)
+                            while len(self._cache) > self.cache_size:
+                                self._cache.popitem(last=False)
+                        return address
+            except (aiohttp.ClientError, asyncio.TimeoutError, ValueError, TypeError):
+                continue
+        # Preserve the original system-DNS fallback, but never cache failures.
+        return original_host
+
+    async def close(self):
+        self._closed = True
+        tasks = list(self._pending.values())
+        for task in tasks:
+            task.cancel()
+        if tasks:
+            await asyncio.gather(*tasks, return_exceptions=True)
+        self._pending.clear()
+        self._cache.clear()
+        if self._session is not None:
+            await self._session.close()
+
+
+_dns_resolver = None
+CONNECT_TIMEOUT = 10.0
+CLOSE_TIMEOUT = 3.0
+
+
+async def resolve_host(host: str) -> str:
+    global _dns_resolver
+    if _dns_resolver is None:
+        _dns_resolver = DNSResolver()
+    return await _dns_resolver.resolve(host)
+
+
+async def cleanup_network_resources(app):
+    global _dns_resolver
+    resolver, _dns_resolver = _dns_resolver, None
+    if resolver is not None:
+        await resolver.close()
+
+
+async def relay_connection(websocket, host, port, initial_data=b''):
+    """Retain 4 KiB reads/backpressure, but close both sides on EOF or error."""
+    writer = None
+    tasks = []
+
+    async def ws_to_tcp():
+        async for msg in websocket:
+            if msg.type == aiohttp.WSMsgType.BINARY:
+                writer.write(msg.data)
+                await writer.drain()
+
+    async def tcp_to_ws():
+        while True:
+            data = await reader.read(4096)
+            if not data:
+                return
+            await websocket.send_bytes(data)
+
+    try:
+        # Includes system-DNS fallback, TCP establishment and cancellation cleanup.
+        reader, writer = await asyncio.wait_for(
+            asyncio.open_connection(host, port), timeout=CONNECT_TIMEOUT,
+        )
+        if initial_data:
+            writer.write(initial_data)
+            await writer.drain()
+        tasks = [
+            asyncio.create_task(ws_to_tcp(), name='proxy-ws-to-tcp'),
+            asyncio.create_task(tcp_to_ws(), name='proxy-tcp-to-ws'),
+        ]
+        done, _ = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+        for task in done:
+            task.result()
+    finally:
+        for task in tasks:
+            if not task.done():
+                task.cancel()
+        if writer is not None:
+            writer.close()
+        if tasks:
+            await asyncio.gather(*tasks, return_exceptions=True)
+        try:
+            if writer is not None:
+                try:
+                    await asyncio.wait_for(writer.wait_closed(), timeout=CLOSE_TIMEOUT)
+                except Exception:
+                    writer.transport.abort()
+        finally:
+            try:
+                await asyncio.wait_for(websocket.close(), timeout=CLOSE_TIMEOUT)
+            except Exception:
+                pass
+
 
 class ProxyHandler:
     def __init__(self, uuid: str):
@@ -202,40 +371,7 @@ class ProxyHandler:
             resolved_host = await resolve_host(host)
             
             try:
-                reader, writer = await asyncio.open_connection(resolved_host, port)
-                
-                # 发送剩余数据
-                if i < len(first_msg):
-                    writer.write(first_msg[i:])
-                    await writer.drain()
-                
-                # 双向转发
-                async def forward_ws_to_tcp():
-                    try:
-                        async for msg in websocket:
-                            if msg.type == aiohttp.WSMsgType.BINARY:
-                                writer.write(msg.data)
-                                await writer.drain()
-                    except:
-                        pass
-                    finally:
-                        writer.close()
-                        await writer.wait_closed()
-                
-                async def forward_tcp_to_ws():
-                    try:
-                        while True:
-                            data = await reader.read(4096)
-                            if not data:
-                                break
-                            await websocket.send_bytes(data)
-                    except:
-                        pass
-                
-                await asyncio.gather(
-                    forward_ws_to_tcp(),
-                    forward_tcp_to_ws()
-                )
+                await relay_connection(websocket, resolved_host, port, first_msg[i:])
                 
             except Exception as e:
                 if DEBUG:
@@ -317,38 +453,7 @@ class ProxyHandler:
             resolved_host = await resolve_host(host)
             
             try:
-                reader, writer = await asyncio.open_connection(resolved_host, port)
-                
-                if offset < len(first_msg):
-                    writer.write(first_msg[offset:])
-                    await writer.drain()
-                
-                async def forward_ws_to_tcp():
-                    try:
-                        async for msg in websocket:
-                            if msg.type == aiohttp.WSMsgType.BINARY:
-                                writer.write(msg.data)
-                                await writer.drain()
-                    except:
-                        pass
-                    finally:
-                        writer.close()
-                        await writer.wait_closed()
-                
-                async def forward_tcp_to_ws():
-                    try:
-                        while True:
-                            data = await reader.read(4096)
-                            if not data:
-                                break
-                            await websocket.send_bytes(data)
-                    except:
-                        pass
-                
-                await asyncio.gather(
-                    forward_ws_to_tcp(),
-                    forward_tcp_to_ws()
-                )
+                await relay_connection(websocket, resolved_host, port, first_msg[offset:])
                 
             except Exception as e:
                 if DEBUG:
@@ -409,38 +514,7 @@ class ProxyHandler:
             resolved_host = await resolve_host(host)
             
             try:
-                reader, writer = await asyncio.open_connection(resolved_host, port)
-                
-                if offset < len(first_msg):
-                    writer.write(first_msg[offset:])
-                    await writer.drain()
-                
-                async def forward_ws_to_tcp():
-                    try:
-                        async for msg in websocket:
-                            if msg.type == aiohttp.WSMsgType.BINARY:
-                                writer.write(msg.data)
-                                await writer.drain()
-                    except:
-                        pass
-                    finally:
-                        writer.close()
-                        await writer.wait_closed()
-                
-                async def forward_tcp_to_ws():
-                    try:
-                        while True:
-                            data = await reader.read(4096)
-                            if not data:
-                                break
-                            await websocket.send_bytes(data)
-                    except:
-                        pass
-                
-                await asyncio.gather(
-                    forward_ws_to_tcp(),
-                    forward_tcp_to_ws()
-                )
+                await relay_connection(websocket, resolved_host, port, first_msg[offset:])
                 
             except Exception as e:
                 if DEBUG:
@@ -559,6 +633,7 @@ async def main():
             sys.exit(1)
     
     app = web.Application()
+    app.on_cleanup.append(cleanup_network_resources)
     
     # 路由
     app.router.add_get('/', http_handler)
